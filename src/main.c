@@ -1,4 +1,3 @@
-#include "config.h"
 #include "game.h"
 #include <raylib.h>
 
@@ -8,16 +7,18 @@ int main()
     SetTargetFPS(FPS);
 
     projectile_t projectiles[MAX_PROJECTILES];
-    size_t pi = 0;
+    size_t pidx = 0;
 
     triangle_t player = {
         .center = randomPosition(),
         .size = TRIANGLE_SIZE,
         .color = GREEN,
-        .rotationDeg = 0.0f,
+        .rotationDeg = 0.0F,
     };
 
     triangle_t enemies[MAX_ENEMIES];
+
+#pragma unroll
     for (size_t i = 0; i < MAX_ENEMIES; i++) {
         Vector2 pos = randomPositionOffScreen();
         enemies[i] = (triangle_t) {
@@ -56,15 +57,17 @@ int main()
         {
             triangle_render(&player);
 
-            for (pi = 0; pi < MAX_ENEMIES; pi++) {
-                triangle_faceOther(&enemies[pi], &player);
-                triangle_moveTowards(&enemies[pi], &player.center, ENEMY_MOVE_SPEED);
-                triangle_render(&enemies[pi]);
+#pragma unroll
+            for (pidx = 0; pidx < MAX_ENEMIES; pidx++) {
+                triangle_faceOther(&enemies[pidx], &player);
+                triangle_moveTowards(&enemies[pidx], &player.center, ENEMY_MOVE_SPEED);
+                triangle_render(&enemies[pidx]);
             }
 
-            for (pi = 0; pi < MAX_PROJECTILES; pi++) {
-                projectile_move(&projectiles[pi]);
-                projectile_render(&projectiles[pi]);
+#pragma unroll
+            for (pidx = 0; pidx < MAX_PROJECTILES; pidx++) {
+                projectile_move(&projectiles[pidx]);
+                projectile_render(&projectiles[pidx]);
             }
         }
         EndDrawing();

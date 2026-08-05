@@ -1,4 +1,3 @@
-#include "config.h"
 #include "game.h"
 #include "raylib.h"
 #include <math.h>
@@ -6,29 +5,29 @@
 projectile_t projectile_create(Vector2 startingPos, float angleDeg)
 {
     float radians = (angleDeg - 90.0) * DEG2RAD;
-    return (projectile_t) {
+    return (projectile_t){
         .pos = startingPos,
-        .direction = { .x = cosf(radians), .y = sinf(radians) },
+        .direction = {.x = cosf(radians), .y = sinf(radians)},
         .isDisplayed = true,
     };
 }
 
-void projectile_move(projectile_t* p)
+void projectile_move(projectile_t *self)
 {
-    if (!p->isDisplayed)
+    if (!self->isDisplayed)
         return;
 
-    p->pos.x += p->direction.x * PROJECTILE_SPEED;
-    p->pos.y += p->direction.y * PROJECTILE_SPEED;
+    self->pos.x += self->direction.x * PROJECTILE_SPEED;
+    self->pos.y += self->direction.y * PROJECTILE_SPEED;
 
-    if (p->pos.x <= 0 || p->pos.x >= WIN_WIDTH || p->pos.y <= 0 || p->pos.y >= WIN_HEIGHT)
-        p->isDisplayed = false;
+    if (self->pos.x <= 0 || self->pos.x >= WIN_WIDTH || self->pos.y <= 0 || self->pos.y >= WIN_HEIGHT)
+        self->isDisplayed = false;
 }
 
-void projectile_render(const projectile_t* p)
+void projectile_render(const projectile_t *self)
 {
-    if (p->isDisplayed == false)
+    if (self->isDisplayed == false)
         return;
 
-    DrawCircle(p->pos.x, p->pos.y, PROJECTILE_SIZE, PROJECTILE_COLOR);
+    DrawCircle(self->pos.x, self->pos.y, PROJECTILE_SIZE, PROJECTILE_COLOR);
 }

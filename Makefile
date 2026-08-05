@@ -7,3 +7,6 @@ BIN=./bin/${NAME}
 
 main:
 	@${CC} ${CFLAGS} ${LDFLAGS} ${SRC} -o ${BIN}
+
+lint:
+	@clang-tidy -checks=* ${SRC}

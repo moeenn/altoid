@@ -1,4 +1,3 @@
-#include "config.h"
 #include "game.h"
 #include <math.h>
 #include <raylib.h>
@@ -7,7 +6,7 @@ Vector2 randomPosition()
 {
     int x = GetRandomValue(0, WIN_WIDTH);
     int y = GetRandomValue(0, WIN_HEIGHT);
-    return (Vector2) { x, y };
+    return (Vector2){x, y};
 }
 
 Vector2 randomPositionOffScreen()
@@ -20,7 +19,8 @@ Vector2 randomPositionOffScreen()
     int x = 0;
     int y = 0;
 
-    switch (randSide) {
+    switch (randSide)
+    {
     case 0: // TOP.
         x = GetRandomValue(-PADDING, MAX_W);
         y = -PADDING;
@@ -42,13 +42,13 @@ Vector2 randomPositionOffScreen()
         break;
     }
 
-    return (Vector2) { x, y };
+    return (Vector2){x, y};
 }
 
-float getAngleInDegrees(Vector2* from, Vector2* to)
+float getAngleInDegrees(Vector2 *from, Vector2 *towards)
 {
-    float dx = to->x - from->x;
-    float dy = to->y - from->y;
+    float dx = towards->x - from->x;
+    float dy = towards->y - from->y;
     float angleRad = atan2f(dy, dx);
     float angleDeg = angleRad * RAD2DEG;
     return angleDeg + 90.0;

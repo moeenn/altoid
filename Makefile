@@ -9,4 +9,4 @@ main:
 	@${CC} ${CFLAGS} ${LDFLAGS} ${SRC} -o ${BIN}
 
 lint:
-	@clang-tidy -checks=* ${SRC}
+	@clang-tidy ${SRC}

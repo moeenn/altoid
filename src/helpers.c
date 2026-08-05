@@ -4,9 +4,12 @@
 
 Vector2 randomPosition()
 {
-    int x = GetRandomValue(0, WIN_WIDTH);
-    int y = GetRandomValue(0, WIN_HEIGHT);
-    return (Vector2){x, y};
+    int xPos = GetRandomValue(0, WIN_WIDTH);
+    int yPos = GetRandomValue(0, WIN_HEIGHT);
+    return (Vector2){
+        .x = (float)xPos,
+        .y = (float)yPos,
+    };
 }
 
 Vector2 randomPositionOffScreen()
@@ -16,40 +19,50 @@ Vector2 randomPositionOffScreen()
     const int MAX_H = WIN_HEIGHT + PADDING;
     int randSide = GetRandomValue(0, 3); // 0 = top, clock-wise,
 
-    int x = 0;
-    int y = 0;
+    int xPos = 0;
+    int yPos = 0;
 
     switch (randSide)
     {
     case 0: // TOP.
-        x = GetRandomValue(-PADDING, MAX_W);
-        y = -PADDING;
+        xPos = GetRandomValue(-PADDING, MAX_W);
+        yPos = -PADDING;
         break;
 
     case 1: // RIGHT.
-        y = GetRandomValue(-PADDING, MAX_H);
-        y = MAX_W;
+        yPos = GetRandomValue(-PADDING, MAX_H);
+        xPos = MAX_W;
         break;
 
     case 2: // BOTTOM.
-        x = GetRandomValue(-PADDING, MAX_W);
-        y = MAX_H;
+        xPos = GetRandomValue(-PADDING, MAX_W);
+        yPos = MAX_H;
         break;
 
     case 3: // LEFT.
-        y = GetRandomValue(-PADDING, MAX_H);
-        x = -PADDING;
+        yPos = GetRandomValue(-PADDING, MAX_H);
+        xPos = -PADDING;
+        break;
+
+    default:
+        xPos = 0;
+        yPos = 0;
         break;
     }
 
-    return (Vector2){x, y};
+    return (Vector2){
+        .x = (float)xPos,
+        .y = (float)yPos,
+    };
 }
 
 float getAngleInDegrees(Vector2 *from, Vector2 *towards)
 {
-    float dx = towards->x - from->x;
-    float dy = towards->y - from->y;
-    float angleRad = atan2f(dy, dx);
+    float distX = towards->x - from->x;
+    float distY = towards->y - from->y;
+    float angleRad = atan2f(distY, distX);
     float angleDeg = angleRad * RAD2DEG;
-    return angleDeg + 90.0;
+
+    static const float ANGLE_ADJ = 90.0F;
+    return angleDeg + ANGLE_ADJ;
 }

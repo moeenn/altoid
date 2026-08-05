@@ -11,21 +11,21 @@ Vector2 rotatePoint(Vector2 point, Vector2 center, float angleDeg)
     float cosA = cosf(angleRad);
     float sinA = sinf(angleRad);
 
-    float dx = point.x - center.x;
-    float dy = point.y - center.y;
+    float distX = point.x - center.x;
+    float distY = point.y - center.y;
 
-    return (Vector2){center.x + (dx * cosA - dy * sinA), center.y + (dx * sinA + dy * cosA)};
+    return (Vector2){center.x + (distX * cosA - distY * sinA), center.y + (distX * sinA + distY * cosA)};
 }
 
 void triangle_render(const triangle_t *self)
 {
     // without rotation.
-    Vector2 v1 = {.x = self->center.x, .y = self->center.y - self->size};
-    Vector2 v2 = {.x = self->center.x - (self->size), .y = self->center.y + (self->size)};
-    Vector2 v3 = {.x = self->center.x + (self->size), .y = self->center.y + (self->size)};
+    Vector2 vec1 = {.x = self->center.x, .y = self->center.y - (float)self->size};
+    Vector2 vec2 = {.x = self->center.x - (float)self->size, .y = self->center.y + (float)self->size};
+    Vector2 vec3 = {.x = self->center.x + (float)self->size, .y = self->center.y + (float)self->size};
 
-    DrawTriangle(rotatePoint(v1, self->center, self->rotationDeg), rotatePoint(v2, self->center, self->rotationDeg),
-                 rotatePoint(v3, self->center, self->rotationDeg), self->color);
+    DrawTriangle(rotatePoint(vec1, self->center, self->rotationDeg), rotatePoint(vec2, self->center, self->rotationDeg),
+                 rotatePoint(vec3, self->center, self->rotationDeg), self->color);
 }
 
 void triangle_spin(triangle_t *self, spinDirection_e dir)
@@ -49,12 +49,12 @@ void triangle_spin(triangle_t *self, spinDirection_e dir)
     }
 }
 
-void triangle_move(triangle_t *self, const direction_e dir, const float speed)
+void triangle_move(triangle_t *self, const triangleMove_t args)
 {
-    switch (dir)
+    switch (args.dir)
     {
     case DIR_DOWN:
-        self->center.y += speed;
+        self->center.y += args.speed;
         if (self->center.y > (float)WIN_HEIGHT)
         {
             self->center.y = (float)WIN_HEIGHT;
@@ -62,7 +62,7 @@ void triangle_move(triangle_t *self, const direction_e dir, const float speed)
         break;
 
     case DIR_UP:
-        self->center.y -= speed;
+        self->center.y -= args.speed;
         if (self->center.y < 0.0F)
         {
             self->center.y = 0.0F;
@@ -70,7 +70,7 @@ void triangle_move(triangle_t *self, const direction_e dir, const float speed)
         break;
 
     case DIR_LEFT:
-        self->center.x -= speed;
+        self->center.x -= args.speed;
         if (self->center.x < 0.0F)
         {
             self->center.x = 0.0F;
@@ -78,7 +78,7 @@ void triangle_move(triangle_t *self, const direction_e dir, const float speed)
         break;
 
     case DIR_RIGHT:
-        self->center.x += speed;
+        self->center.x += args.speed;
         if (self->center.x > (float)WIN_WIDTH)
         {
             self->center.x = (float)WIN_WIDTH;
@@ -102,9 +102,10 @@ void triangle_moveTowards(triangle_t *self, Vector2 *other, const float speed)
     self->center = Vector2Add(self->center, Vector2Scale(direction, speed));
 }
 
-void triangle_shoot(triangle_t *self, projectile_t *projectiles, const size_t size)
+void triangle_shoot(triangle_t *self, projectile_t *projectiles)
 {
-    for (size_t i = 0; i < size; i++)
+#pragma unroll
+    for (size_t i = 0; i < MAX_PROJECTILES; i++)
     {
         if (!projectiles[i].isDisplayed)
         {

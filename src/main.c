@@ -1,5 +1,6 @@
 #include "game.h"
 #include <raylib.h>
+#include <stdio.h>
 
 int main()
 {
@@ -11,7 +12,7 @@ int main()
 
     triangle_t player = {
         .center = randomPosition(),
-        .size = TRIANGLE_SIZE,
+        .size = (int)TRIANGLE_SIZE,
         .color = GREEN,
         .rotationDeg = 0.0F,
     };
@@ -19,37 +20,46 @@ int main()
     triangle_t enemies[MAX_ENEMIES];
 
 #pragma unroll
-    for (size_t i = 0; i < MAX_ENEMIES; i++) {
+    for (size_t i = 0; i < MAX_ENEMIES; i++)
+    {
         Vector2 pos = randomPositionOffScreen();
-        enemies[i] = (triangle_t) {
-            .size = TRIANGLE_SIZE,
+        enemies[i] = (triangle_t){
+            .size = (int)TRIANGLE_SIZE,
             .color = RED,
             .center = pos,
             .rotationDeg = getAngleInDegrees(&pos, &player.center),
         };
     }
 
-    while (!WindowShouldClose()) {
-        if (IsKeyDown(KEY_E)) {
+    while (!WindowShouldClose())
+    {
+        if (IsKeyDown(KEY_E))
+        {
             triangle_spin(&player, SDIR_LEFT);
         }
-        if (IsKeyDown(KEY_Q)) {
+        if (IsKeyDown(KEY_Q))
+        {
             triangle_spin(&player, SDIR_RIGHT);
         }
-        if (IsKeyDown(KEY_LEFT)) {
-            triangle_move(&player, DIR_LEFT, PLAYER_MOVE_SPEED);
+        if (IsKeyDown(KEY_LEFT))
+        {
+            triangle_move(&player, (triangleMove_t){DIR_LEFT, PLAYER_MOVE_SPEED});
         }
-        if (IsKeyDown(KEY_RIGHT)) {
-            triangle_move(&player, DIR_RIGHT, PLAYER_MOVE_SPEED);
+        if (IsKeyDown(KEY_RIGHT))
+        {
+            triangle_move(&player, (triangleMove_t){DIR_RIGHT, PLAYER_MOVE_SPEED});
         }
-        if (IsKeyDown(KEY_UP)) {
-            triangle_move(&player, DIR_UP, PLAYER_MOVE_SPEED);
+        if (IsKeyDown(KEY_UP))
+        {
+            triangle_move(&player, (triangleMove_t){DIR_UP, PLAYER_MOVE_SPEED});
         }
-        if (IsKeyDown(KEY_DOWN)) {
-            triangle_move(&player, DIR_DOWN, PLAYER_MOVE_SPEED);
+        if (IsKeyDown(KEY_DOWN))
+        {
+            triangle_move(&player, (triangleMove_t){DIR_DOWN, PLAYER_MOVE_SPEED});
         }
-        if (IsKeyDown(KEY_SPACE)) {
-            triangle_shoot(&player, projectiles, MAX_PROJECTILES);
+        if (IsKeyDown(KEY_SPACE))
+        {
+            triangle_shoot(&player, projectiles);
         }
 
         BeginDrawing();
@@ -58,14 +68,16 @@ int main()
             triangle_render(&player);
 
 #pragma unroll
-            for (pidx = 0; pidx < MAX_ENEMIES; pidx++) {
+            for (pidx = 0; pidx < MAX_ENEMIES; pidx++)
+            {
                 triangle_faceOther(&enemies[pidx], &player);
                 triangle_moveTowards(&enemies[pidx], &player.center, ENEMY_MOVE_SPEED);
                 triangle_render(&enemies[pidx]);
             }
 
 #pragma unroll
-            for (pidx = 0; pidx < MAX_PROJECTILES; pidx++) {
+            for (pidx = 0; pidx < MAX_PROJECTILES; pidx++)
+            {
                 projectile_move(&projectiles[pidx]);
                 projectile_render(&projectiles[pidx]);
             }

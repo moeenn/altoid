@@ -48,7 +48,8 @@ void entity_render(const entity_t *self)
     }
 
     // without rotation.
-    Vector2 vec1 = {.x = self->center.x, .y = self->center.y - (float)self->size};
+    static const float HEAD_ADJUSTMENT = 4.0F;
+    Vector2 vec1 = {.x = self->center.x, .y = self->center.y - (float)self->size - HEAD_ADJUSTMENT};
     Vector2 vec2 = {.x = self->center.x - (float)self->size, .y = self->center.y + (float)self->size};
     Vector2 vec3 = {.x = self->center.x + (float)self->size, .y = self->center.y + (float)self->size};
 
@@ -176,6 +177,15 @@ bool entity_isHit(const entity_t *self, projectile_t *projectile)
 
     float dist = Vector2Distance(self->center, projectile->pos);
     return (bool)(dist <= (float)self->size);
+}
+
+void enemies_init(entity_t *enemies, entity_t *player)
+{
+#pragma unroll
+    for (size_t i = 0; i < MAX_ENEMIES; i++)
+    {
+        enemies[i] = entity_newEnemy(&player->center);
+    }
 }
 
 void enemies_render(entity_t *enemies, entity_t *player)

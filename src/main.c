@@ -16,20 +16,11 @@ int main()
     projectile_t projectiles[MAX_PROJECTILES];
     explosion_t explosions[MAX_EXPLOSIONS];
 
+    enemies_init(enemies, &player);
+    explosions_init(explosions);
+
     size_t pIdx = 0;
     size_t eIdx = 0;
-
-#pragma unroll
-    for (size_t i = 0; i < MAX_ENEMIES; i++)
-    {
-        enemies[i] = entity_newEnemy(&player.center);
-    }
-
-#pragma unroll
-    for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
-    {
-        explosions[i].isDisplayed = false;
-    }
 
     while (!WindowShouldClose())
     {

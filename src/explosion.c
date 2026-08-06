@@ -43,6 +43,15 @@ void explosion_add(explosion_t *explosions, Vector2 pos)
     }
 }
 
+void explosions_init(explosion_t *explosions)
+{
+#pragma unroll
+    for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
+    {
+        explosions[i].isDisplayed = false;
+    }
+}
+
 void explosions_render(explosion_t *explosions)
 {
 #pragma unroll

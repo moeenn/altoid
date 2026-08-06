@@ -1,4 +1,5 @@
 #include "game.h"
+#include <raylib.h>
 
 void keymap_enable(entity_t *player, projectile_t *projectiles)
 {

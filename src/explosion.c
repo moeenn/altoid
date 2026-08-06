@@ -14,12 +14,15 @@ explosion_t explosion_new(bool isDisplayed, Vector2 pos)
 
 void explosion_render(explosion_t *self)
 {
+    if (!self->isDisplayed)
+    {
+        return;
+    }
+
     static const int MAX_OPACITY = 180;
-    if (!self->isDisplayed || (self->radius == EXPLOSION_MAX_RADIUS && self->color.a == MAX_OPACITY))
+    if (self->radius == EXPLOSION_MAX_RADIUS && self->color.a == MAX_OPACITY)
     {
         self->isDisplayed = false;
-        self->radius = EXPLOSION_MIN_RADIUS;
-        self->color = EXPLOSION_COLOR;
         return;
     }
 
@@ -36,6 +39,7 @@ void explosion_add(explosion_t *explosions, Vector2 pos)
         if (!explosions[i].isDisplayed)
         {
             explosions[i] = explosion_new(true, pos);
+            return;
         }
     }
 }

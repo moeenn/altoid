@@ -14,16 +14,10 @@ int main()
     entity_t player = entity_newPlayer();
     entity_t enemies[MAX_ENEMIES];
     projectile_t projectiles[MAX_PROJECTILES];
+    explosion_t explosions[MAX_EXPLOSIONS];
 
     size_t pIdx = 0;
     size_t eIdx = 0;
-
-    explosion_t explosions[MAX_EXPLOSIONS];
-#pragma unroll
-    for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
-    {
-        explosions[i] = explosion_new(false, (Vector2){0, 0});
-    }
 
 #pragma unroll
     for (size_t i = 0; i < MAX_ENEMIES; i++)

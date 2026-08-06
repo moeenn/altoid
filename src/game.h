@@ -35,7 +35,7 @@ static const int HEALTHBAR_HEIGHT = 2;
 static const int HEALTHBAR_CELL_WIDTH = 5;
 static const Color HEALTHBAR_COLOR = BLUE;
 static const int EXPLOSION_MIN_RADIUS = 5;
-static const int EXPLOSION_MAX_RADIUS = 40;
+static const int EXPLOSION_MAX_RADIUS = 60;
 static const Color EXPLOSION_COLOR = {105, 25, 30, 10};
 static const int MAX_EXPLOSIONS = MAX_ENEMIES + 1;
 

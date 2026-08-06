@@ -29,6 +29,15 @@ void projectile_move(projectile_t *self)
     }
 }
 
+projectile_t projectile_hide()
+{
+    return (projectile_t){
+        .isDisplayed = false,
+        .pos = {0, 0},
+        .direction = {0, 0},
+    };
+}
+
 void projectile_render(const projectile_t *self)
 {
     if (!self->isDisplayed)

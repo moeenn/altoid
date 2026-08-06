@@ -2,85 +2,120 @@
 #include <raylib.h>
 #include <stdio.h>
 
+void enemies_render(entity_t *enemies, entity_t *player)
+{
+    size_t idx = 0;
+
+#pragma unroll
+    for (idx = 0; idx < MAX_ENEMIES; idx++)
+    {
+        entity_faceOther(&enemies[idx], player);
+        entity_moveTowards(&enemies[idx], &player->center, ENEMY_MOVE_SPEED);
+        entity_render(&enemies[idx]);
+    }
+}
+
+void projectiles_render(projectile_t *projectiles)
+{
+    size_t idx = 0;
+
+#pragma unroll
+    for (idx = 0; idx < MAX_PROJECTILES; idx++)
+    {
+        projectile_move(&projectiles[idx]);
+        projectile_render(&projectiles[idx]);
+    }
+}
+
 int main()
 {
     InitWindow(WIN_WIDTH, WIN_HEIGHT, WIN_TITLE);
     SetTargetFPS(FPS);
 
-    projectile_t projectiles[MAX_PROJECTILES];
     size_t pidx = 0;
+    size_t eidx = 0;
 
-    triangle_t player = {
-        .center = randomPosition(),
-        .size = (int)TRIANGLE_SIZE,
-        .color = GREEN,
-        .rotationDeg = 0.0F,
-    };
+    int score = 0;
+    char scoreString[4];
+    int sprintResult = 0;
 
-    triangle_t enemies[MAX_ENEMIES];
+    entity_t player = entity_newPlayer();
+    entity_t enemies[MAX_ENEMIES];
+    projectile_t projectiles[MAX_PROJECTILES];
 
 #pragma unroll
     for (size_t i = 0; i < MAX_ENEMIES; i++)
     {
-        Vector2 pos = randomPositionOffScreen();
-        enemies[i] = (triangle_t){
-            .size = (int)TRIANGLE_SIZE,
-            .color = RED,
-            .center = pos,
-            .rotationDeg = getAngleInDegrees(&pos, &player.center),
-        };
+        enemies[i] = entity_newEnemy(&player.center);
     }
 
     while (!WindowShouldClose())
     {
-        if (IsKeyDown(KEY_E))
+        if (IsKeyDown(KEY_D))
         {
-            triangle_spin(&player, SDIR_LEFT);
+            entity_spin(&player, SDIR_LEFT);
         }
-        if (IsKeyDown(KEY_Q))
+        if (IsKeyDown(KEY_A))
         {
-            triangle_spin(&player, SDIR_RIGHT);
+            entity_spin(&player, SDIR_RIGHT);
         }
         if (IsKeyDown(KEY_LEFT))
         {
-            triangle_move(&player, (triangleMove_t){DIR_LEFT, PLAYER_MOVE_SPEED});
+            entity_move(&player, (entityMove_t){DIR_LEFT, PLAYER_MOVE_SPEED});
         }
         if (IsKeyDown(KEY_RIGHT))
         {
-            triangle_move(&player, (triangleMove_t){DIR_RIGHT, PLAYER_MOVE_SPEED});
+            entity_move(&player, (entityMove_t){DIR_RIGHT, PLAYER_MOVE_SPEED});
         }
         if (IsKeyDown(KEY_UP))
         {
-            triangle_move(&player, (triangleMove_t){DIR_UP, PLAYER_MOVE_SPEED});
+            entity_move(&player, (entityMove_t){DIR_UP, PLAYER_MOVE_SPEED});
         }
         if (IsKeyDown(KEY_DOWN))
         {
-            triangle_move(&player, (triangleMove_t){DIR_DOWN, PLAYER_MOVE_SPEED});
+            entity_move(&player, (entityMove_t){DIR_DOWN, PLAYER_MOVE_SPEED});
         }
         if (IsKeyDown(KEY_SPACE))
         {
-            triangle_shoot(&player, projectiles);
+            entity_shoot(&player, projectiles);
+        }
+
+        sprintResult = sprintf(scoreString, "%d", score);
+        if (sprintResult < 0)
+        {
+            score = 0;
         }
 
         BeginDrawing();
         ClearBackground(BLACK);
         {
-            triangle_render(&player);
+            DrawText(scoreString, SCORE_POS_X, SCORE_POS_Y, SCORE_FONT_SIZE, SCORE_COLOR);
+            entity_render(&player);
+            enemies_render(enemies, &player);
 
 #pragma unroll
             for (pidx = 0; pidx < MAX_ENEMIES; pidx++)
             {
-                triangle_faceOther(&enemies[pidx], &player);
-                triangle_moveTowards(&enemies[pidx], &player.center, ENEMY_MOVE_SPEED);
-                triangle_render(&enemies[pidx]);
-            }
 
 #pragma unroll
-            for (pidx = 0; pidx < MAX_PROJECTILES; pidx++)
-            {
-                projectile_move(&projectiles[pidx]);
-                projectile_render(&projectiles[pidx]);
+                for (eidx = 0; eidx < MAX_PROJECTILES; eidx++)
+                {
+                    if (entity_isHit(&enemies[pidx], &projectiles[eidx]))
+                    {
+                        entity_reduceHealth(&enemies[pidx]);
+                        projectiles[eidx] = projectile_hide();
+
+                        if (enemies[pidx].health <= 0)
+                        {
+                            // reset enemy.
+                            score += 1;
+                            enemies[pidx] = entity_newEnemy(&player.center);
+                        }
+                    }
+                }
             }
+
+            projectiles_render(projectiles);
         }
         EndDrawing();
     }

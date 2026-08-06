@@ -18,7 +18,12 @@ int main()
     size_t pIdx = 0;
     size_t eIdx = 0;
 
-    const Color WIN_BG = {20, 20, 20, 255};
+    explosion_t explosions[MAX_EXPLOSIONS];
+#pragma unroll
+    for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
+    {
+        explosions[i] = explosion_new(false, (Vector2){0, 0});
+    }
 
 #pragma unroll
     for (size_t i = 0; i < MAX_ENEMIES; i++)
@@ -39,6 +44,7 @@ int main()
         ClearBackground(WIN_BG);
         {
             DrawText(scoreString, SCORE_POS_X, SCORE_POS_Y, SCORE_FONT_SIZE, SCORE_COLOR);
+            explosions_render(explosions);
             entity_render(&player);
             enemies_render(enemies, &player);
 
@@ -56,6 +62,7 @@ int main()
 
                         if (enemies[eIdx].health <= 0)
                         {
+                            explosion_add(explosions, enemies[eIdx].center);
                             // reset enemy.
                             score += 1;
                             enemies[eIdx] = entity_newEnemy(&player.center);

@@ -12,6 +12,7 @@
 static const char *const WIN_TITLE = "Game";
 static const int WIN_WIDTH = 1000;
 static const int WIN_HEIGHT = 800;
+static const Color WIN_BG = {10, 10, 30, 255};
 static const int FPS = 60;
 static const float SPIN_SPEED = 5.0F;
 static const float ENTITY_SIZE = 10.0F;
@@ -33,6 +34,10 @@ static const Color SCORE_COLOR = WHITE;
 static const int HEALTHBAR_HEIGHT = 2;
 static const int HEALTHBAR_CELL_WIDTH = 5;
 static const Color HEALTHBAR_COLOR = BLUE;
+static const int EXPLOSION_MIN_RADIUS = 5;
+static const int EXPLOSION_MAX_RADIUS = 40;
+static const Color EXPLOSION_COLOR = {105, 25, 30, 10};
+static const int MAX_EXPLOSIONS = MAX_ENEMIES + 1;
 
 typedef struct
 {
@@ -80,6 +85,14 @@ typedef struct
     bool isDisplayed;
 } __attribute__((aligned(ALIGN_32))) projectile_t;
 
+typedef struct
+{
+    Vector2 pos;
+    Color color;
+    int radius;
+    bool isDisplayed;
+} __attribute__((aligned(ALIGN_32))) explosion_t;
+
 void keymap_enable(entity_t *player, projectile_t *projectiles);
 Vector2 randomPosition();
 Vector2 randomPositionOffScreen();
@@ -101,3 +114,7 @@ void projectile_move(projectile_t *self);
 projectile_t projectile_hide();
 void projectile_render(const projectile_t *self);
 void projectiles_render(projectile_t *projectiles);
+explosion_t explosion_new(bool isDisplayed, Vector2 pos);
+void explosion_render(explosion_t *self);
+void explosion_add(explosion_t *explosions, Vector2 pos);
+void explosions_render(explosion_t *explosions);

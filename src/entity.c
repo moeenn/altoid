@@ -20,7 +20,7 @@ Vector2 rotatePoint(Vector2 point, Vector2 center, float angleDeg)
 entity_t entity_newPlayer()
 {
     return (entity_t){
-        .center = randomPosition(),
+        .center = {(float)WIN_WIDTH / 2, (float)WIN_HEIGHT / 2},
         .size = (int)ENTITY_SIZE,
         .color = PLAYER_COLOR,
         .rotationDeg = 0.0F,

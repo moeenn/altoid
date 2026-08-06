@@ -86,38 +86,45 @@ void entity_spin(entity_t *self, spinDirection_e dir)
 
 void entity_move(entity_t *self, const entityMove_t args)
 {
+    static const float DIAG_ADJUSTMENT = 0.7F;
+    float adj = args.speed * DIAG_ADJUSTMENT;
+
     switch (args.dir)
     {
-    case DIR_DOWN:
-        self->center.y += args.speed;
-        if (self->center.y > (float)WIN_HEIGHT)
-        {
-            self->center.y = (float)WIN_HEIGHT;
-        }
+    case DIR_NORTH:
+        self->center.y = clampMin(0, self->center.y - args.speed);
         break;
 
-    case DIR_UP:
-        self->center.y -= args.speed;
-        if (self->center.y < 0.0F)
-        {
-            self->center.y = 0.0F;
-        }
+    case DIR_NORTHEAST:
+        self->center.x = clampMax(self->center.x + adj, (float)WIN_WIDTH);
+        self->center.y = clampMin(0.0F, self->center.y - adj);
         break;
 
-    case DIR_LEFT:
-        self->center.x -= args.speed;
-        if (self->center.x < 0.0F)
-        {
-            self->center.x = 0.0F;
-        }
+    case DIR_EAST:
+        self->center.x = clampMax(self->center.x + args.speed, (float)WIN_WIDTH);
         break;
 
-    case DIR_RIGHT:
-        self->center.x += args.speed;
-        if (self->center.x > (float)WIN_WIDTH)
-        {
-            self->center.x = (float)WIN_WIDTH;
-        }
+    case DIR_SOUTHEAST:
+        self->center.x = clampMax(self->center.x + adj, (float)WIN_WIDTH);
+        self->center.y = clampMax(self->center.y + adj, (float)WIN_HEIGHT);
+        break;
+
+    case DIR_SOUTH:
+        self->center.y = clampMax(self->center.y + args.speed, (float)WIN_HEIGHT);
+        break;
+
+    case DIR_SOUTHWEST:
+        self->center.x = clampMin(0, self->center.x - adj);
+        self->center.y = clampMax(self->center.y + adj, (float)WIN_HEIGHT);
+        break;
+
+    case DIR_WEST:
+        self->center.x = clampMin(0.0F, self->center.x - args.speed);
+        break;
+
+    case DIR_NORTHWEST:
+        self->center.x = clampMin(0, self->center.x - adj);
+        self->center.y = clampMin(0, self->center.y - adj);
         break;
     }
 }
@@ -172,4 +179,17 @@ bool entity_isHit(const entity_t *self, projectile_t *projectile)
 
     float dist = Vector2Distance(self->center, projectile->pos);
     return (bool)(dist <= (float)self->size);
+}
+
+void enemies_render(entity_t *enemies, entity_t *player)
+{
+    size_t idx = 0;
+
+#pragma unroll
+    for (idx = 0; idx < MAX_ENEMIES; idx++)
+    {
+        entity_faceOther(&enemies[idx], player);
+        entity_moveTowards(&enemies[idx], &player->center, ENEMY_MOVE_SPEED);
+        entity_render(&enemies[idx]);
+    }
 }

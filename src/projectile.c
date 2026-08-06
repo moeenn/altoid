@@ -1,6 +1,7 @@
 #include "game.h"
 #include "raylib.h"
 #include <math.h>
+#include <stdio.h>
 
 projectile_t projectile_create(Vector2 startingPos, float angleDeg)
 {
@@ -46,4 +47,16 @@ void projectile_render(const projectile_t *self)
     }
 
     DrawCircle((int)self->pos.x, (int)self->pos.y, PROJECTILE_SIZE, PROJECTILE_COLOR);
+}
+
+void projectiles_render(projectile_t *projectiles)
+{
+    size_t idx = 0;
+
+#pragma unroll
+    for (idx = 0; idx < MAX_PROJECTILES; idx++)
+    {
+        projectile_move(&projectiles[idx]);
+        projectile_render(&projectiles[idx]);
+    }
 }

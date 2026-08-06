@@ -51,10 +51,14 @@ typedef enum
 
 typedef enum
 {
-    DIR_LEFT,
-    DIR_RIGHT,
-    DIR_UP,
-    DIR_DOWN,
+    DIR_NORTH,
+    DIR_NORTHEAST,
+    DIR_EAST,
+    DIR_SOUTHEAST,
+    DIR_SOUTH,
+    DIR_SOUTHWEST,
+    DIR_WEST,
+    DIR_NORTHWEST,
 } direction_e;
 
 typedef struct
@@ -70,6 +74,7 @@ typedef struct
     bool isDisplayed;
 } __attribute__((aligned(ALIGN_32))) projectile_t;
 
+void keymap_enable(entity_t *player, projectile_t *projectiles);
 Vector2 randomPosition();
 Vector2 randomPositionOffScreen();
 float getAngleInDegrees(Vector2 *from, Vector2 *towards);
@@ -84,7 +89,12 @@ void entity_shoot(entity_t *self, projectile_t *projectiles);
 void entity_faceOther(entity_t *self, entity_t *other);
 void entity_reduceHealth(entity_t *self);
 bool entity_isHit(const entity_t *self, projectile_t *projectile);
+void enemies_render(entity_t *enemies, entity_t *player);
 projectile_t projectile_create(Vector2 startingPos, float angleDeg);
 void projectile_move(projectile_t *self);
 projectile_t projectile_hide();
 void projectile_render(const projectile_t *self);
+void projectiles_render(projectile_t *projectiles);
+
+#define clampMin(a, b) (((a) > (b)) ? (a) : (b))
+#define clampMax(a, b) (((a) < (b)) ? (a) : (b))

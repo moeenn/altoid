@@ -18,6 +18,8 @@ int main()
     size_t pIdx = 0;
     size_t eIdx = 0;
 
+    const Color WIN_BG = {20, 20, 20, 255};
+
 #pragma unroll
     for (size_t i = 0; i < MAX_ENEMIES; i++)
     {
@@ -34,7 +36,7 @@ int main()
         }
 
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(WIN_BG);
         {
             DrawText(scoreString, SCORE_POS_X, SCORE_POS_Y, SCORE_FONT_SIZE, SCORE_COLOR);
             entity_render(&player);

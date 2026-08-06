@@ -56,11 +56,8 @@ void entity_render(const entity_t *self)
                  rotatePoint(vec3, self->center, self->rotationDeg), self->color);
 
     // draw healthbar.
-    static const int BAR_HEIGHT = 2;
-    static const int BAR_CELL_WIDTH = 5;
-    static const Color BAR_COLOR = BLUE;
-    DrawRectangle((int)self->center.x + self->size, (int)self->center.y - self->size, BAR_CELL_WIDTH * self->health,
-                  BAR_HEIGHT, BAR_COLOR);
+    DrawRectangle((int)self->center.x + self->size, (int)self->center.y - self->size,
+                  HEALTHBAR_CELL_WIDTH * self->health, HEALTHBAR_HEIGHT, HEALTHBAR_COLOR);
 }
 
 void entity_spin(entity_t *self, spinDirection_e dir)

@@ -2,6 +2,13 @@
 #include "raylib.h"
 #include "stdint.h"
 
+#define ALIGN_8 8
+#define ALIGN_16 16
+#define ALIGN_32 32
+
+#define clampMin(a, b) (((a) > (b)) ? (a) : (b))
+#define clampMax(a, b) (((a) < (b)) ? (a) : (b))
+
 static const char *const WIN_TITLE = "Game";
 static const int WIN_WIDTH = 1000;
 static const int WIN_HEIGHT = 800;
@@ -23,10 +30,9 @@ static const int SCORE_POS_X = 10;
 static const int SCORE_POS_Y = 10;
 static const int SCORE_FONT_SIZE = 20;
 static const Color SCORE_COLOR = WHITE;
-
-#define ALIGN_8 8
-#define ALIGN_16 16
-#define ALIGN_32 32
+static const int HEALTHBAR_HEIGHT = 2;
+static const int HEALTHBAR_CELL_WIDTH = 5;
+static const Color HEALTHBAR_COLOR = BLUE;
 
 typedef struct
 {
@@ -95,6 +101,3 @@ void projectile_move(projectile_t *self);
 projectile_t projectile_hide();
 void projectile_render(const projectile_t *self);
 void projectiles_render(projectile_t *projectiles);
-
-#define clampMin(a, b) (((a) > (b)) ? (a) : (b))
-#define clampMax(a, b) (((a) < (b)) ? (a) : (b))

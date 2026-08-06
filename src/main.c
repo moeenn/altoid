@@ -7,9 +7,6 @@ int main()
     InitWindow(WIN_WIDTH, WIN_HEIGHT, WIN_TITLE);
     SetTargetFPS(FPS);
 
-    size_t pidx = 0;
-    size_t eidx = 0;
-
     int score = 0;
     char scoreString[4];
     int sprintResult = 0;
@@ -17,6 +14,9 @@ int main()
     entity_t player = entity_newPlayer();
     entity_t enemies[MAX_ENEMIES];
     projectile_t projectiles[MAX_PROJECTILES];
+
+    size_t pIdx = 0;
+    size_t eIdx = 0;
 
 #pragma unroll
     for (size_t i = 0; i < MAX_ENEMIES; i++)
@@ -41,22 +41,22 @@ int main()
             enemies_render(enemies, &player);
 
 #pragma unroll
-            for (pidx = 0; pidx < MAX_ENEMIES; pidx++)
+            for (eIdx = 0; eIdx < MAX_ENEMIES; eIdx++)
             {
 
 #pragma unroll
-                for (eidx = 0; eidx < MAX_PROJECTILES; eidx++)
+                for (pIdx = 0; pIdx < MAX_PROJECTILES; pIdx++)
                 {
-                    if (entity_isHit(&enemies[pidx], &projectiles[eidx]))
+                    if (entity_isHit(&enemies[eIdx], &projectiles[pIdx]))
                     {
-                        entity_reduceHealth(&enemies[pidx]);
-                        projectiles[eidx] = projectile_hide();
+                        entity_reduceHealth(&enemies[eIdx]);
+                        projectiles[pIdx] = projectile_hide();
 
-                        if (enemies[pidx].health <= 0)
+                        if (enemies[eIdx].health <= 0)
                         {
                             // reset enemy.
                             score += 1;
-                            enemies[pidx] = entity_newEnemy(&player.center);
+                            enemies[eIdx] = entity_newEnemy(&player.center);
                         }
                     }
                 }

@@ -25,6 +25,12 @@ int main()
         enemies[i] = entity_newEnemy(&player.center);
     }
 
+#pragma unroll
+    for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
+    {
+        explosions[i].isDisplayed = false;
+    }
+
     while (!WindowShouldClose())
     {
         keymap_enable(&player, projectiles);

@@ -2,6 +2,11 @@
 #include "raylib.h"
 #include "stdint.h"
 
+// -----------------------------------------------------------------------------
+//
+// constants.
+//
+// -----------------------------------------------------------------------------
 #define ALIGN_8 8
 #define ALIGN_16 16
 #define ALIGN_32 32
@@ -36,9 +41,14 @@ static const int HEALTHBAR_CELL_WIDTH = 5;
 static const Color HEALTHBAR_COLOR = BLUE;
 static const int EXPLOSION_MIN_RADIUS = 5;
 static const int EXPLOSION_MAX_RADIUS = 60;
-static const Color EXPLOSION_COLOR = {105, 25, 30, 10};
+static const Color EXPLOSION_COLOR = {255, 40, 0, 255};
 static const int MAX_EXPLOSIONS = MAX_ENEMIES + 1;
 
+// -----------------------------------------------------------------------------
+//
+// structures and enums.
+//
+// -----------------------------------------------------------------------------
 typedef struct
 {
     int x;
@@ -93,6 +103,11 @@ typedef struct
     bool isDisplayed;
 } __attribute__((aligned(ALIGN_32))) explosion_t;
 
+// -----------------------------------------------------------------------------
+//
+// function prototypes.
+//
+// -----------------------------------------------------------------------------
 void keymap_enable(entity_t *player, projectile_t *projectiles);
 Vector2 randomPosition();
 Vector2 randomPositionOffScreen();

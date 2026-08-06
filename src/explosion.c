@@ -19,15 +19,14 @@ void explosion_render(explosion_t *self)
         return;
     }
 
-    static const int MAX_OPACITY = 180;
-    if (self->radius == EXPLOSION_MAX_RADIUS && self->color.a == MAX_OPACITY)
+    if (self->radius == EXPLOSION_MAX_RADIUS && self->color.a == 0)
     {
         self->isDisplayed = false;
         return;
     }
 
     self->radius = clampMax(self->radius + 1, EXPLOSION_MAX_RADIUS);
-    self->color.a = clampMax(self->color.a + 5, MAX_OPACITY);
+    self->color.a = clampMin(0, self->color.a - 5);
     DrawCircle((int)self->pos.x, (int)self->pos.y, (float)self->radius, self->color);
 }
 

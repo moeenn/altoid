@@ -23,7 +23,8 @@ entity_t entity_newPlayer()
         .center = {(float)WIN_WIDTH / 2, (float)WIN_HEIGHT / 2},
         .size = (int)ENTITY_SIZE,
         .color = PLAYER_COLOR,
-        .rotationDeg = 0.0F,
+        .targetRotationDeg = 0.0F,
+        .currentRotationDeg = 0.0F,
         .health = PLAYER_MAX_HEALTH,
     };
 }
@@ -31,11 +32,13 @@ entity_t entity_newPlayer()
 entity_t entity_newEnemy(Vector2 *playerPos)
 {
     Vector2 pos = randomPositionOffScreen();
+    float rotation = getAngleInDegrees(&pos, playerPos);
     return (entity_t){
         .size = (int)ENTITY_SIZE,
         .color = ENEMY_COLOR,
         .center = pos,
-        .rotationDeg = getAngleInDegrees(&pos, playerPos),
+        .targetRotationDeg = rotation,
+        .currentRotationDeg = rotation,
         .health = PLAYER_MAX_HEALTH,
     };
 }
@@ -53,8 +56,9 @@ void entity_render(const entity_t *self)
     Vector2 vec2 = {.x = self->center.x - (float)self->size, .y = self->center.y + (float)self->size};
     Vector2 vec3 = {.x = self->center.x + (float)self->size, .y = self->center.y + (float)self->size};
 
-    DrawTriangle(rotatePoint(vec1, self->center, self->rotationDeg), rotatePoint(vec2, self->center, self->rotationDeg),
-                 rotatePoint(vec3, self->center, self->rotationDeg), self->color);
+    DrawTriangle(rotatePoint(vec1, self->center, self->currentRotationDeg),
+                 rotatePoint(vec2, self->center, self->currentRotationDeg),
+                 rotatePoint(vec3, self->center, self->currentRotationDeg), self->color);
 
     // draw healthbar.
     DrawRectangle((int)self->center.x + self->size, (int)self->center.y - self->size,
@@ -68,17 +72,17 @@ void entity_spin(entity_t *self, spinDirection_e dir)
     switch (dir)
     {
     case SDIR_LEFT:
-        self->rotationDeg += SPIN_SPEED;
+        self->currentRotationDeg += SPIN_SPEED;
         break;
 
     case SDIR_RIGHT:
-        self->rotationDeg -= SPIN_SPEED;
+        self->currentRotationDeg -= SPIN_SPEED;
         break;
     }
 
-    if (self->rotationDeg >= MAX_ANGLE)
+    if (self->currentRotationDeg >= MAX_ANGLE)
     {
-        self->rotationDeg -= MAX_ANGLE;
+        self->currentRotationDeg -= MAX_ANGLE;
     }
 }
 
@@ -149,7 +153,7 @@ void entity_shoot(entity_t *self, projectile_t *projectiles)
     {
         if (!projectiles[i].isDisplayed)
         {
-            projectiles[i] = projectile_create(self->center, self->rotationDeg);
+            projectiles[i] = projectile_create(self->center, self->currentRotationDeg);
             return;
         }
     }
@@ -157,7 +161,23 @@ void entity_shoot(entity_t *self, projectile_t *projectiles)
 
 void entity_faceOther(entity_t *self, entity_t *other)
 {
-    self->rotationDeg = getAngleInDegrees(&self->center, &other->center);
+    self->targetRotationDeg = getAngleInDegrees(&self->center, &other->center);
+    float delta = self->currentRotationDeg - self->targetRotationDeg;
+
+    float update =
+        (delta > 0) ? (self->currentRotationDeg - ENTITY_SPIN_DRAG) : (self->currentRotationDeg + ENTITY_SPIN_DRAG);
+
+    static const float MAX_ANGLE = 360.0F;
+    if (update < 0.0F)
+    {
+        update = MAX_ANGLE + update;
+    }
+    if (update > MAX_ANGLE)
+    {
+        update = MAX_ANGLE - update;
+    }
+
+    self->currentRotationDeg = update;
 }
 
 void entity_reduceHealth(entity_t *self)

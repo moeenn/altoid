@@ -26,12 +26,13 @@ static const Color ENEMY_COLOR = ORANGE;
 static const float PLAYER_MOVE_SPEED = 5.0F;
 static const float ENEMY_MOVE_SPEED = 2.0F;
 static const float PROJECTILE_SIZE = 2.0F;
-static const float PROJECTILE_SPEED = 7.0F;
+static const float PROJECTILE_SPEED = 10.0F;
 static const Color PROJECTILE_COLOR = RED;
 static const int MAX_PROJECTILES = 40;
 static const int MAX_ENEMIES = 5;
 static const int8_t PLAYER_MAX_HEALTH = 5;
 static const Vector2 PLAYER_HEALTHBAR_POS = {10, 10};
+static const float ENTITY_SPIN_DRAG = 1.0F;
 static const int SCORE_POS_X = 10;
 static const int SCORE_POS_Y = 10;
 static const int SCORE_FONT_SIZE = 20;
@@ -59,7 +60,8 @@ typedef struct
 {
     Vector2 center;
     Color color;
-    float rotationDeg;
+    float targetRotationDeg;
+    float currentRotationDeg;
     int size;
     int8_t health;
 } __attribute__((aligned(ALIGN_32))) entity_t;

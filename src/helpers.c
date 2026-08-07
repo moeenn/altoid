@@ -1,6 +1,7 @@
 #include "game.h"
 #include <math.h>
 #include <raylib.h>
+#include <stdio.h>
 
 Vector2 randomPosition()
 {

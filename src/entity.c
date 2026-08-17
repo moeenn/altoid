@@ -26,6 +26,7 @@ entity_t entity__newPlayer()
         .targetRotationDeg = 0.0F,
         .currentRotationDeg = 0.0F,
         .health = PLAYER_MAX_HEALTH,
+        .accel = 0.0F,
     };
 }
 
@@ -133,17 +134,32 @@ void entity__move(entity_t *self, const entityMove_t args)
 
 void entity__moveTowards(entity_t *self, Vector2 *other, const float speed)
 {
-    Vector2 direction = Vector2Subtract(*other, self->center);
-    float distance = Vector2Length(direction);
+    int xDelta = (int)(other->x - self->center.x);
+    int yDelta = (int)(other->y - self->center.y);
+    float distance = sqrtf((float)(xDelta * xDelta) + (float)(yDelta * yDelta));
 
-    // Already there (or close enough) — snap and stop
-    if (distance <= speed || distance == 0.0F)
+    float dirX = (float)xDelta / distance;
+    float dirY = (float)yDelta / distance;
+
+    int xMove = (int)(dirX * speed * (1.0F + self->accel));
+    int yMove = (int)(dirY * speed * (1.0F + self->accel));
+
+    static const float DISTANCE_THRESHOLD = 5.0F;
+    if (distance < DISTANCE_THRESHOLD)
     {
-        return;
+        self->accel = 0;
+    }
+    else
+    {
+        self->accel += ENTITY_ACCELERATION;
+        if (self->accel > ENTITY_MAX_ACCELERATION)
+        {
+            self->accel = ENTITY_MAX_ACCELERATION;
+        }
     }
 
-    direction = Vector2Scale(direction, 1.0F / distance); // normalize
-    self->center = Vector2Add(self->center, Vector2Scale(direction, speed));
+    self->center.x += (float)xMove;
+    self->center.y += (float)yMove;
 }
 
 void entity__shoot(entity_t *self, projectile_t *projectiles)

@@ -18,10 +18,12 @@ static const Color WIN_BG = {10, 10, 30, 255};
 static const int FPS = 60;
 static const float SPIN_SPEED = 5.0F;
 static const float ENTITY_SIZE = 10.0F;
+static const float ENTITY_ACCELERATION = 0.005F;
+static const float ENTITY_MAX_ACCELERATION = 2.58F;
 static const Color PLAYER_COLOR = GREEN;
 static const Color ENEMY_COLOR = ORANGE;
 static const float PLAYER_MOVE_SPEED = 5.0F;
-static const float ENEMY_MOVE_SPEED = 2.0F;
+static const float ENEMY_MOVE_SPEED = 1.5F;
 static const float PROJECTILE_SIZE = 2.0F;
 static const float PROJECTILE_SPEED = 10.0F;
 static const Color PROJECTILE_COLOR = RED;
@@ -80,6 +82,7 @@ typedef struct
     float currentRotationDeg;
     int size;
     int8_t health;
+    float accel;
 } __attribute__((aligned(ALIGN_32))) entity_t;
 
 typedef enum

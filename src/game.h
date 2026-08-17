@@ -25,9 +25,11 @@ static const Color ENEMY_COLOR = ORANGE;
 static const float PLAYER_MOVE_SPEED = 5.0F;
 static const float ENEMY_MOVE_SPEED = 1.5F;
 static const float PROJECTILE_SIZE = 2.0F;
-static const float PROJECTILE_SPEED = 10.0F;
+static const float PROJECTILE_SPEED = 7.5F;
 static const Color PROJECTILE_COLOR = RED;
 static const int MAX_PROJECTILES = 40;
+static const float PROJECTILE_DECELERATION = 0.09F;
+static const float PROJECTILE_MAX_ACCELERATION = 2.0F;
 static const int MAX_ENEMIES = 5;
 static const int8_t PLAYER_MAX_HEALTH = 5;
 static const Vector2 PLAYER_HEALTHBAR_POS = {10, 10};
@@ -114,6 +116,7 @@ typedef struct
     Vector2 pos;
     Vector2 direction;
     bool isDisplayed;
+    float accel;
 } __attribute__((aligned(ALIGN_32))) projectile_t;
 
 typedef struct
@@ -122,6 +125,7 @@ typedef struct
     Color color;
     int radius;
     bool isDisplayed;
+
 } __attribute__((aligned(ALIGN_32))) explosion_t;
 
 // -----------------------------------------------------------------------------

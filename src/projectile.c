@@ -11,6 +11,7 @@ projectile_t projectile__create(Vector2 startingPos, float angleDeg)
         .pos = startingPos,
         .direction = {.x = cosf(radians), .y = sinf(radians)},
         .isDisplayed = true,
+        .accel = PROJECTILE_MAX_ACCELERATION,
     };
 }
 
@@ -21,8 +22,14 @@ void projectile__move(projectile_t *self)
         return;
     }
 
-    self->pos.x += self->direction.x * PROJECTILE_SPEED;
-    self->pos.y += self->direction.y * PROJECTILE_SPEED;
+    self->pos.x += self->direction.x * (PROJECTILE_SPEED + (1.0F + self->accel));
+    self->pos.y += self->direction.y * (PROJECTILE_SPEED * (1.0F + self->accel));
+
+    self->accel -= PROJECTILE_DECELERATION;
+    if (self->accel < 0.0F)
+    {
+        self->accel = 0.0F;
+    }
 
     if (self->pos.x <= 0 || self->pos.x >= (float)WIN_WIDTH || self->pos.y <= 0 || self->pos.y >= (float)WIN_HEIGHT)
     {

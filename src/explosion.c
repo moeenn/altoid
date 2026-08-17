@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include <stdio.h>
 
-explosion_t explosion_new(bool isDisplayed, Vector2 pos)
+explosion_t explosion__new(bool isDisplayed, Vector2 pos)
 {
     return (explosion_t){
         .isDisplayed = isDisplayed,
@@ -12,7 +12,7 @@ explosion_t explosion_new(bool isDisplayed, Vector2 pos)
     };
 }
 
-void explosion_render(explosion_t *self)
+void explosion__render(explosion_t *self)
 {
     if (!self->isDisplayed)
     {
@@ -30,20 +30,20 @@ void explosion_render(explosion_t *self)
     DrawCircle((int)self->pos.x, (int)self->pos.y, (float)self->radius, self->color);
 }
 
-void explosion_add(explosion_t *explosions, Vector2 pos)
+void explosion__add(explosion_t *explosions, Vector2 pos)
 {
 #pragma unroll
     for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
     {
         if (!explosions[i].isDisplayed)
         {
-            explosions[i] = explosion_new(true, pos);
+            explosions[i] = explosion__new(true, pos);
             return;
         }
     }
 }
 
-void explosions_init(explosion_t *explosions)
+void explosions__init(explosion_t *explosions)
 {
 #pragma unroll
     for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
@@ -52,11 +52,11 @@ void explosions_init(explosion_t *explosions)
     }
 }
 
-void explosions_render(explosion_t *explosions)
+void explosions__render(explosion_t *explosions)
 {
 #pragma unroll
     for (size_t i = 0; i < MAX_EXPLOSIONS; i++)
     {
-        explosion_render(&explosions[i]);
+        explosion__render(&explosions[i]);
     }
 }

@@ -11,20 +11,20 @@ int main()
     char scoreString[4];
     int sprintResult = 0;
 
-    entity_t player = entity_newPlayer();
+    entity_t player = entity__newPlayer();
     entity_t enemies[MAX_ENEMIES];
     projectile_t projectiles[MAX_PROJECTILES];
     explosion_t explosions[MAX_EXPLOSIONS];
 
-    enemies_init(enemies, &player);
-    explosions_init(explosions);
+    enemies__init(enemies, &player);
+    explosions__init(explosions);
 
     size_t pIdx = 0;
     size_t eIdx = 0;
 
     while (!WindowShouldClose())
     {
-        keymap_enable(&player, projectiles);
+        keymap__enable(&player, projectiles);
         sprintResult = sprintf(scoreString, "%d", score);
         if (sprintResult < 0)
         {
@@ -35,9 +35,9 @@ int main()
         ClearBackground(WIN_BG);
         {
             DrawText(scoreString, SCORE_POS_X, SCORE_POS_Y, SCORE_FONT_SIZE, SCORE_COLOR);
-            explosions_render(explosions);
-            entity_render(&player);
-            enemies_render(enemies, &player);
+            explosions__render(explosions);
+            entity__render(&player);
+            enemies__render(enemies, &player);
 
 #pragma unroll
             for (eIdx = 0; eIdx < MAX_ENEMIES; eIdx++)
@@ -46,23 +46,23 @@ int main()
 #pragma unroll
                 for (pIdx = 0; pIdx < MAX_PROJECTILES; pIdx++)
                 {
-                    if (entity_isHit(&enemies[eIdx], &projectiles[pIdx]))
+                    if (entity__isHit(&enemies[eIdx], &projectiles[pIdx]))
                     {
-                        entity_reduceHealth(&enemies[eIdx]);
-                        projectiles[pIdx] = projectile_hide();
+                        entity__reduceHealth(&enemies[eIdx]);
+                        projectiles[pIdx] = projectile__hide();
 
                         if (enemies[eIdx].health <= 0)
                         {
-                            explosion_add(explosions, enemies[eIdx].center);
+                            explosion__add(explosions, enemies[eIdx].center);
                             // reset enemy.
                             score += 1;
-                            enemies[eIdx] = entity_newEnemy(&player.center);
+                            enemies[eIdx] = entity__newEnemy(&player.center);
                         }
                     }
                 }
             }
 
-            projectiles_render(projectiles);
+            projectiles__render(projectiles);
         }
         EndDrawing();
     }

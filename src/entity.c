@@ -17,7 +17,7 @@ Vector2 rotatePoint(Vector2 point, Vector2 center, float angleDeg)
     return (Vector2){center.x + (distX * cosA - distY * sinA), center.y + (distX * sinA + distY * cosA)};
 }
 
-entity_t entity_newPlayer()
+entity_t entity__newPlayer()
 {
     return (entity_t){
         .center = {(float)WIN_WIDTH / 2, (float)WIN_HEIGHT / 2},
@@ -29,7 +29,7 @@ entity_t entity_newPlayer()
     };
 }
 
-entity_t entity_newEnemy(Vector2 *playerPos)
+entity_t entity__newEnemy(Vector2 *playerPos)
 {
     Vector2 pos = randomPositionOffScreen();
     float rotation = getAngleInDegrees(&pos, playerPos);
@@ -43,7 +43,7 @@ entity_t entity_newEnemy(Vector2 *playerPos)
     };
 }
 
-void entity_render(const entity_t *self)
+void entity__render(const entity_t *self)
 {
     if (self->health <= 0)
     {
@@ -65,7 +65,7 @@ void entity_render(const entity_t *self)
                   HEALTHBAR_CELL_WIDTH * self->health, HEALTHBAR_HEIGHT, HEALTHBAR_COLOR);
 }
 
-void entity_spin(entity_t *self, spinDirection_e dir)
+void entity__spin(entity_t *self, spinDirection_e dir)
 {
     static const float MAX_ANGLE = 360.0F;
 
@@ -86,7 +86,7 @@ void entity_spin(entity_t *self, spinDirection_e dir)
     }
 }
 
-void entity_move(entity_t *self, const entityMove_t args)
+void entity__move(entity_t *self, const entityMove_t args)
 {
     static const float DIAG_ADJUSTMENT = 0.7F;
     float adj = args.speed * DIAG_ADJUSTMENT;
@@ -131,7 +131,7 @@ void entity_move(entity_t *self, const entityMove_t args)
     }
 }
 
-void entity_moveTowards(entity_t *self, Vector2 *other, const float speed)
+void entity__moveTowards(entity_t *self, Vector2 *other, const float speed)
 {
     Vector2 direction = Vector2Subtract(*other, self->center);
     float distance = Vector2Length(direction);
@@ -146,20 +146,20 @@ void entity_moveTowards(entity_t *self, Vector2 *other, const float speed)
     self->center = Vector2Add(self->center, Vector2Scale(direction, speed));
 }
 
-void entity_shoot(entity_t *self, projectile_t *projectiles)
+void entity__shoot(entity_t *self, projectile_t *projectiles)
 {
 #pragma unroll
     for (size_t i = 0; i < MAX_PROJECTILES; i++)
     {
         if (!projectiles[i].isDisplayed)
         {
-            projectiles[i] = projectile_create(self->center, self->currentRotationDeg);
+            projectiles[i] = projectile__create(self->center, self->currentRotationDeg);
             return;
         }
     }
 }
 
-void entity_faceOther(entity_t *self, entity_t *other)
+void entity__faceOther(entity_t *self, entity_t *other)
 {
     self->targetRotationDeg = getAngleInDegrees(&self->center, &other->center);
     float delta = self->currentRotationDeg - self->targetRotationDeg;
@@ -180,7 +180,7 @@ void entity_faceOther(entity_t *self, entity_t *other)
     self->currentRotationDeg = update;
 }
 
-void entity_reduceHealth(entity_t *self)
+void entity__reduceHealth(entity_t *self)
 {
     if (self->health > 0)
     {
@@ -188,7 +188,7 @@ void entity_reduceHealth(entity_t *self)
     }
 }
 
-bool entity_isHit(const entity_t *self, projectile_t *projectile)
+bool entity__isHit(const entity_t *self, projectile_t *projectile)
 {
     if (!projectile->isDisplayed)
     {
@@ -199,24 +199,24 @@ bool entity_isHit(const entity_t *self, projectile_t *projectile)
     return (bool)(dist <= (float)self->size);
 }
 
-void enemies_init(entity_t *enemies, entity_t *player)
+void enemies__init(entity_t *enemies, entity_t *player)
 {
 #pragma unroll
     for (size_t i = 0; i < MAX_ENEMIES; i++)
     {
-        enemies[i] = entity_newEnemy(&player->center);
+        enemies[i] = entity__newEnemy(&player->center);
     }
 }
 
-void enemies_render(entity_t *enemies, entity_t *player)
+void enemies__render(entity_t *enemies, entity_t *player)
 {
     size_t idx = 0;
 
 #pragma unroll
     for (idx = 0; idx < MAX_ENEMIES; idx++)
     {
-        entity_faceOther(&enemies[idx], player);
-        entity_moveTowards(&enemies[idx], &player->center, ENEMY_MOVE_SPEED);
-        entity_render(&enemies[idx]);
+        entity__faceOther(&enemies[idx], player);
+        entity__moveTowards(&enemies[idx], &player->center, ENEMY_MOVE_SPEED);
+        entity__render(&enemies[idx]);
     }
 }

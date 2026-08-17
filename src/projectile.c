@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdio.h>
 
-projectile_t projectile_create(Vector2 startingPos, float angleDeg)
+projectile_t projectile__create(Vector2 startingPos, float angleDeg)
 {
     static const float ROTATION_ADJ = 90.0F;
     float radians = (angleDeg - ROTATION_ADJ) * DEG2RAD;
@@ -14,7 +14,7 @@ projectile_t projectile_create(Vector2 startingPos, float angleDeg)
     };
 }
 
-void projectile_move(projectile_t *self)
+void projectile__move(projectile_t *self)
 {
     if (!self->isDisplayed)
     {
@@ -30,7 +30,7 @@ void projectile_move(projectile_t *self)
     }
 }
 
-projectile_t projectile_hide()
+projectile_t projectile__hide()
 {
     return (projectile_t){
         .isDisplayed = false,
@@ -39,7 +39,7 @@ projectile_t projectile_hide()
     };
 }
 
-void projectile_render(const projectile_t *self)
+void projectile__render(const projectile_t *self)
 {
     if (!self->isDisplayed)
     {
@@ -49,14 +49,14 @@ void projectile_render(const projectile_t *self)
     DrawCircle((int)self->pos.x, (int)self->pos.y, PROJECTILE_SIZE, PROJECTILE_COLOR);
 }
 
-void projectiles_render(projectile_t *projectiles)
+void projectiles__render(projectile_t *projectiles)
 {
     size_t idx = 0;
 
 #pragma unroll
     for (idx = 0; idx < MAX_PROJECTILES; idx++)
     {
-        projectile_move(&projectiles[idx]);
-        projectile_render(&projectiles[idx]);
+        projectile__move(&projectiles[idx]);
+        projectile__render(&projectiles[idx]);
     }
 }

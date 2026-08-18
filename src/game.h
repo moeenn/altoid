@@ -4,17 +4,17 @@
 
 // -----------------------------------------------------------------------------
 //
-// constants.
+// config & constants.
 //
 // -----------------------------------------------------------------------------
 #define ALIGN_8 8
 #define ALIGN_16 16
 #define ALIGN_32 32
 
-static const char *const WIN_TITLE = "Game";
+static const char* const WIN_TITLE = "Game";
 static const int WIN_WIDTH = 1000;
 static const int WIN_HEIGHT = 800;
-static const Color WIN_BG = {10, 10, 30, 255};
+static const Color WIN_BG = { 10, 10, 30, 255 };
 static const int FPS = 60;
 static const float SPIN_SPEED = 5.0F;
 static const float ENTITY_SIZE = 10.0F;
@@ -32,7 +32,7 @@ static const float PROJECTILE_DECELERATION = 0.09F;
 static const float PROJECTILE_MAX_ACCELERATION = 2.0F;
 static const int MAX_ENEMIES = 5;
 static const int8_t PLAYER_MAX_HEALTH = 5;
-static const Vector2 PLAYER_HEALTHBAR_POS = {10, 10};
+static const Vector2 PLAYER_HEALTHBAR_POS = { 10, 10 };
 static const float ENTITY_SPIN_DRAG = 1.0F;
 static const int SCORE_POS_X = 10;
 static const int SCORE_POS_Y = 10;
@@ -43,7 +43,7 @@ static const int HEALTHBAR_CELL_WIDTH = 5;
 static const Color HEALTHBAR_COLOR = BLUE;
 static const int EXPLOSION_MIN_RADIUS = 5;
 static const int EXPLOSION_MAX_RADIUS = 60;
-static const Color EXPLOSION_COLOR = {255, 40, 0, 255};
+static const Color EXPLOSION_COLOR = { 255, 40, 0, 255 };
 static const int MAX_EXPLOSIONS = MAX_ENEMIES + 1;
 
 // -----------------------------------------------------------------------------
@@ -55,14 +55,12 @@ static const int MAX_EXPLOSIONS = MAX_ENEMIES + 1;
 #define clampMax(a, b) (((a) < (b)) ? (a) : (b))
 #define clamp(min, max, current) ((current) < (min)) ? (min) : (((current) > (max)) ? (max) : (current))
 
-#define passert(condition)                                                                                             \
-    do                                                                                                                 \
-    {                                                                                                                  \
-        if (!(condition))                                                                                              \
-        {                                                                                                              \
-            fprintf(stderr, "%s:%d :: assertion failed.\n", __FILE_NAME__, __LINE__);                                  \
-            exit(1);                                                                                                   \
-        }                                                                                                              \
+#define passert(condition)                                                            \
+    do {                                                                              \
+        if (!(condition)) {                                                           \
+            fprintf(stderr, "%s:%d :: assertion failed.\n", __FILE_NAME__, __LINE__); \
+            exit(1);                                                                  \
+        }                                                                             \
     } while (0)
 
 // -----------------------------------------------------------------------------
@@ -87,14 +85,12 @@ typedef struct
     float accel;
 } __attribute__((aligned(ALIGN_32))) entity_t;
 
-typedef enum
-{
+typedef enum {
     SDIR_LEFT,
     SDIR_RIGHT,
 } spinDirection_e;
 
-typedef enum
-{
+typedef enum {
     DIR_NORTH,
     DIR_NORTHEAST,
     DIR_EAST,
@@ -133,30 +129,30 @@ typedef struct
 // function prototypes.
 //
 // -----------------------------------------------------------------------------
-void keymap__enable(entity_t *player, projectile_t *projectiles);
+void keymap__enable(entity_t* player, projectile_t* projectiles);
 Vector2 randomPosition();
 Vector2 randomPositionOffScreen();
-float getAngleInDegrees(Vector2 *from, Vector2 *towards);
+float getAngleInDegrees(Vector2* from, Vector2* towards);
 Vector2 rotatePoint(Vector2 point, Vector2 center, float angleDeg);
 entity_t entity__newPlayer();
-entity_t entity__newEnemy(Vector2 *playerPos);
-void entity__render(const entity_t *self);
-void entity__spin(entity_t *self, spinDirection_e dir);
-void entity__move(entity_t *self, entityMove_t args);
-void entity__moveTowards(entity_t *self, Vector2 *other, float speed);
-void entity__shoot(entity_t *self, projectile_t *projectiles);
-void entity__faceOther(entity_t *self, entity_t *other);
-void entity__reduceHealth(entity_t *self);
-bool entity__isHit(const entity_t *self, projectile_t *projectile);
-void enemies__init(entity_t *enemies, entity_t *player);
-void enemies__render(entity_t *enemies, entity_t *player);
+entity_t entity__newEnemy(Vector2* playerPos);
+void entity__render(const entity_t* self);
+void entity__spin(entity_t* self, spinDirection_e dir);
+void entity__move(entity_t* self, entityMove_t args);
+void entity__moveTowards(entity_t* self, Vector2* other, float speed);
+void entity__shoot(entity_t* self, projectile_t* projectiles);
+void entity__faceOther(entity_t* self, entity_t* other);
+void entity__reduceHealth(entity_t* self);
+bool entity__isHit(const entity_t* self, projectile_t* projectile);
+void enemies__init(entity_t* enemies, entity_t* player);
+void enemies__render(entity_t* enemies, entity_t* player);
 projectile_t projectile__create(Vector2 startingPos, float angleDeg);
-void projectile__move(projectile_t *self);
+void projectile__move(projectile_t* self);
 projectile_t projectile__hide();
-void projectile__render(const projectile_t *self);
-void projectiles__render(projectile_t *projectiles);
+void projectile__render(const projectile_t* self);
+void projectiles__render(projectile_t* projectiles);
 explosion_t explosion__new(bool isDisplayed, Vector2 pos);
-void explosion__render(explosion_t *self);
-void explosion__add(explosion_t *explosions, Vector2 pos);
-void explosions__init(explosion_t *explosions);
-void explosions__render(explosion_t *explosions);
+void explosion__render(explosion_t* self);
+void explosion__add(explosion_t* explosions, Vector2 pos);
+void explosions__init(explosion_t* explosions);
+void explosions__render(explosion_t* explosions);

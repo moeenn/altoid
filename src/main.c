@@ -22,12 +22,10 @@ int main()
     size_t pIdx = 0;
     size_t eIdx = 0;
 
-    while (!WindowShouldClose())
-    {
+    while (!WindowShouldClose()) {
         keymap__enable(&player, projectiles);
         sprintResult = sprintf(scoreString, "%d", score);
-        if (sprintResult < 0)
-        {
+        if (sprintResult < 0) {
             score = 0;
         }
 
@@ -40,19 +38,15 @@ int main()
             enemies__render(enemies, &player);
 
 #pragma unroll
-            for (eIdx = 0; eIdx < MAX_ENEMIES; eIdx++)
-            {
+            for (eIdx = 0; eIdx < MAX_ENEMIES; eIdx++) {
 
 #pragma unroll
-                for (pIdx = 0; pIdx < MAX_PROJECTILES; pIdx++)
-                {
-                    if (entity__isHit(&enemies[eIdx], &projectiles[pIdx]))
-                    {
+                for (pIdx = 0; pIdx < MAX_PROJECTILES; pIdx++) {
+                    if (entity__isHit(&enemies[eIdx], &projectiles[pIdx])) {
                         entity__reduceHealth(&enemies[eIdx]);
                         projectiles[pIdx] = projectile__hide();
 
-                        if (enemies[eIdx].health <= 0)
-                        {
+                        if (enemies[eIdx].health <= 0) {
                             explosion__add(explosions, enemies[eIdx].center);
                             // reset enemy.
                             score += 1;
